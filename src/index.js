@@ -167,7 +167,6 @@ function actionListController(e) {
 function init() {
     buttonCreateList.addEventListener('click', controllerNewList);
     // wrapperNewList.addEventListener('input', inputController);
-    // wrapperNewList.addEventListener('input', getTextList);
     wrapperNewList.addEventListener('click', actionListController)
 }
 
