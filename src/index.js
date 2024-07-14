@@ -14,11 +14,6 @@ function addNewList(newList) {
     LIST.push(newList);
 }
 
-// function findListById(id) {
-//     const findList = LIST.findIndex((list) => list.id === id);
-//     LIST[findList] = '56565655556'
-// }
-
 function deleteBtnForId(id) {
     const index = LIST.children.findIndex((tsk) => tsk.id === id);
     LIST.children.splice(index, 1);
@@ -147,7 +142,6 @@ function actionListController(e) {
     if (action === 'create') {
         console.log('create');
         getInputListText(e)
-        // findListById(id)
         renderList()
     }
 
