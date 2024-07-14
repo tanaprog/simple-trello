@@ -14,11 +14,6 @@ function addNewList(newList) {
     LIST.push(newList);
 }
 
-// function findListById(id) {
-//     const findList = LIST.findIndex((list) => list.id === id);
-//     LIST[findList] = '56565655556'
-// }
-
 function deleteBtnForId(id) {
     const index = LIST.children.findIndex((tsk) => tsk.id === id);
     LIST.children.splice(index, 1);
@@ -142,14 +137,11 @@ function showChild() {
 
 function actionListController(e) {
     const id = getListId(e);
-    // const txt = getInputListText(e)
     const action = e.target.dataset.action;
 
     if (action === 'create') {
         console.log('create');
         getInputListText(e)
-        // findListById(id)
-        // addNewList(txt)
         renderList()
     }
 
@@ -169,7 +161,6 @@ function actionListController(e) {
 function init() {
     buttonCreateList.addEventListener('click', controllerNewList);
     // wrapperNewList.addEventListener('input', inputController);
-    // wrapperNewList.addEventListener('input', getTextList);
     wrapperNewList.addEventListener('click', actionListController)
 }
 
