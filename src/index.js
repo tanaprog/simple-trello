@@ -142,14 +142,12 @@ function showChild() {
 
 function actionListController(e) {
     const id = getListId(e);
-    // const txt = getInputListText(e)
     const action = e.target.dataset.action;
 
     if (action === 'create') {
         console.log('create');
         getInputListText(e)
         // findListById(id)
-        // addNewList(txt)
         renderList()
     }
 
