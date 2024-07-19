@@ -26,10 +26,6 @@ body {
     padding: 10px;
 }
 
-/* .new-list:nth-child(3){
-    display: flex;
-    justify-content: flex-end;
-} */
 
 .list-form {
     display: flex;
@@ -81,7 +77,6 @@ body {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    /* margin-left: 150px; */
     margin-bottom: 15px;
 }
 
@@ -96,8 +91,7 @@ body {
     font-size: 18px;
 }
 
-
-.child-text-none {
+.wrapper-span{
     /* display: none; */
 }
 
@@ -109,6 +103,11 @@ body {
     border: none;
     width: 80%;
     font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.child-text-none{
+    /* display: none; */
 }
 
 .delete-btn {
@@ -119,7 +118,6 @@ body {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    /* display: none; */
 }
 
 .delete-list{

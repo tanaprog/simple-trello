@@ -2,7 +2,7 @@ const inputLiskTitle = document.querySelector('.list-title');
 const buttonCreateList = document.querySelector('.create-list');
 const wrapperNewList = document.querySelector('.wrapper-new-list')
 
-LIST = [];
+let LIST = [];
 
 function createElement(tag, className) {
     const element = document.createElement(tag);
@@ -14,14 +14,11 @@ function addNewList(newList) {
     LIST.push(newList);
 }
 
-// function findListById(id) {
-//     const findList = LIST.findIndex((list) => list.id === id);
-//     LIST[findList] = '56565655556'
-// }
-
 function deleteBtnForId(id) {
-    const index = LIST.children.findIndex((tsk) => tsk.id === id);
-    LIST.children.splice(index, 1);
+    const inputChild = document.querySelectorAll('.child-text');
+    const allInputs = (Array.from(inputChild));
+    const index = allInputs.findIndex((tsk) => tsk.id === id);
+    allInputs.splice(index, 1);
 }
 
 function deleteNewList(id) {
@@ -35,19 +32,13 @@ function getInputText(e) {
     const listText = inputLiskTitle.value;
     return listText;
 }
-//////////////
 
-function getInputListText(e) {
-    e.preventDefault();
-
-    LIST.forEach(() => {
-    const textList = document.querySelector('.text-title');
-    const listNewText = textList.value;
-    console.log(listNewText)
-    return listNewText;
-})
+function getInputListText(id) {
+    const textsList = document.querySelectorAll('.text-title');
+    const allInputs = (Array.from(textsList));
+    const textInput = allInputs.find((elem) => Number(elem.id) === id);
+    return textInput.value;
 }
-//////////////////
 
 function clearInputText() {
     inputLiskTitle.value = '';
@@ -86,7 +77,7 @@ function renderList() {
 
         list.children.forEach((child) => {
             const item = createElement('input', 'child-text');
-            item.classList.add('child-text-none');
+            item.classList.add('child-text-none')
             item.value = child.text;
             item.setAttribute('id', child.id);
             const deleteBtn = createElement('button', 'delete-btn');
@@ -142,14 +133,19 @@ function showChild() {
 
 function actionListController(e) {
     const id = getListId(e);
-    // const txt = getInputListText(e)
     const action = e.target.dataset.action;
 
     if (action === 'create') {
-        console.log('create');
-        getInputListText(e)
-        // findListById(id)
-        // addNewList(txt)
+        const text = getInputListText(id);
+        const child = { id: Math.floor(Math.random() * 200) + 1, text };
+
+        LIST.forEach((item) => {
+            if (Number(item.id === id)) {
+                item.children.push(child)
+            }
+        });
+
+        showChild()
         renderList()
     }
 
@@ -159,7 +155,6 @@ function actionListController(e) {
     }
 
     if (action === 'deleteBtn') {
-        console.log('YOOOOO')
         deleteBtnForId(id);
         renderList()
     }
@@ -168,8 +163,6 @@ function actionListController(e) {
 
 function init() {
     buttonCreateList.addEventListener('click', controllerNewList);
-    // wrapperNewList.addEventListener('input', inputController);
-    // wrapperNewList.addEventListener('input', getTextList);
     wrapperNewList.addEventListener('click', actionListController)
 }
 
