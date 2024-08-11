@@ -28,7 +28,7 @@ function deleteChildForId(listId, itemId) {
     const listChildren = listElement.children;
     const indexByChildren = listChildren.findIndex((item) => item.id === itemId);
 
-    listChildren.splice(indexByChildren, 1)
+    listChildren.splice(indexByChildren, 1);
 }
 
 function deleteNewList(id) {
@@ -88,13 +88,11 @@ function renderList() {
         children.setAttribute('id', list.id);
 
         list.children.forEach((child) => {
-
-            const editableClass = child.isEdit ? "border: 1px solid green" : "";
             
             const item = createElement('span', 'child-text');
             item.textContent = child.text;
             item.setAttribute('style', child.isEdit ? "border: 2px solid white" : "");
-            item.contenteditable = child.isEdit
+            item.contenteditable = child.isEdit;
             item.setAttribute('id', child.id);
             
             const editBtnImg = createElement('img', 'edit-btn');
