@@ -19,7 +19,7 @@ body {
 }
 
 .new-list {
-    width: 270px;
+    width: 280px;
     background: rgb(228, 190, 190);
     margin: 25px 15px 25px 50px;
     border-radius: 10px;
@@ -31,7 +31,6 @@ body {
     display: flex;
     flex-direction: column;
     margin: 10px;
-
 }
 
 .list-title {
@@ -91,30 +90,27 @@ body {
     font-size: 18px;
 }
 
-.wrapper-span{
-    /* display: none; */
+.wrapper-span {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
 }
 
 .child-text {
     background: rgb(187, 139, 139);
-    padding: 5px;
+    padding: 5px 15px;
     border-radius: 5px;
     outline: none;
     border: none;
-    width: 80%;
+    max-width: 200px;
     font-size: 18px;
     margin-bottom: 5px;
-}
-
-.child-text-none{
-    /* display: none; */
 }
 
 .delete-btn {
     background: rgb(139, 205, 243);
     padding: 5px 10px;
     font-size: 18px;
-    margin-left: 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -128,4 +124,13 @@ body {
     border-radius: 5px;
     cursor: pointer;
     margin-top: 5px;
+}
+
+.edit-btn{
+    width: 25px;
+    height: 30px;
+    border-radius: 10px;
+    text-align: center;
+    margin-left: 1px;
+    margin-right: 1px;
 }

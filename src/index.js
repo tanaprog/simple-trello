@@ -14,11 +14,21 @@ function addNewList(newList) {
     LIST.push(newList);
 }
 
-function deleteBtnForId(id) {
-    const inputChild = document.querySelectorAll('.child-text');
-    const allInputs = (Array.from(inputChild));
-    const index = allInputs.findIndex((tsk) => tsk.id === id);
-    allInputs.splice(index, 1);
+function editChildrenText(listId, childId) {
+    const findListId = LIST.findIndex((elem) => elem.id === listId);
+    const elementList = LIST[findListId];
+    const elementChildren = elementList.children;
+    const editChildbyId = elementChildren.findIndex((item) => item.id === childId);
+    editChildbyId.isEdit = !editChildbyId.isEdit;
+}
+
+function deleteChildForId(listId, itemId) {
+    const indexByList = LIST.findIndex((elem) => elem.id === listId);
+    const listElement = LIST[indexByList];
+    const listChildren = listElement.children;
+    const indexByChildren = listChildren.findIndex((item) => item.id === itemId);
+
+    listChildren.splice(indexByChildren, 1)
 }
 
 function deleteNewList(id) {
@@ -54,7 +64,9 @@ function getListId(event) {
 
 function renderList() {
     wrapperNewList.innerHTML = '';
+
     LIST.forEach((list) => {
+
         const newList = createElement('div', 'new-list')
         newList.setAttribute('id', list.id);
         const inputListText = createElement('input', 'description-text')
@@ -76,16 +88,27 @@ function renderList() {
         children.setAttribute('id', list.id);
 
         list.children.forEach((child) => {
-            const item = createElement('input', 'child-text');
-            item.classList.add('child-text-none')
-            item.value = child.text;
+
+            const editableClass = child.isEdit ? "border: 1px solid green" : "";
+            
+            const item = createElement('span', 'child-text');
+            item.textContent = child.text;
+            item.setAttribute('style', child.isEdit ? "border: 2px solid white" : "");
+            item.contenteditable = child.isEdit
             item.setAttribute('id', child.id);
+            
+            const editBtnImg = createElement('img', 'edit-btn');
+            editBtnImg.src = child.isEdit ? 'img/edit.png' : 'img/save.png';
+
+            editBtnImg.setAttribute('id', child.id);
+            editBtnImg.dataset.action = 'editBtn';
             const deleteBtn = createElement('button', 'delete-btn');
             deleteBtn.dataset.action = 'deleteBtn';
             deleteBtn.textContent = 'X';
             deleteBtn.setAttribute('id', child.id)
 
             children.appendChild(item);
+            children.appendChild(editBtnImg)
             children.appendChild(deleteBtn);
         })
 
@@ -105,10 +128,7 @@ function controllerNewList(e) {
     const newList = {
         id: Math.floor(Math.random() * 200) + 1,
         text: text,
-        children: [{
-            id: Math.floor(Math.random() * 200) + 1,
-            text: '',
-        }]
+        children: []
     }
     console.log(newList)
     console.log(LIST)
@@ -118,17 +138,11 @@ function controllerNewList(e) {
     renderList()
 }
 
-
 function inputController(e) {
     const id = getListId(e);
     const text = e.target.value;
     const editElem = LIST.findIndex((elem) => elem.id === id);
     LIST[editElem].text = text;
-}
-
-function showChild() {
-    const addChild = document.querySelector('.child-text');
-    addChild.classList.toggle('child-text-none');
 }
 
 function actionListController(e) {
@@ -144,8 +158,8 @@ function actionListController(e) {
                 item.children.push(child)
             }
         });
+        console.log('create')
 
-        showChild()
         renderList()
     }
 
@@ -154,8 +168,17 @@ function actionListController(e) {
         renderList()
     }
 
+    if (action === 'editBtn') {
+        console.log('EDIT')
+        const childId = e.target.id;
+        console.log(childId);
+        editChildrenText(id, childId);
+        renderList()
+    }
+
     if (action === 'deleteBtn') {
-        deleteBtnForId(id);
+        const childrenId = e.target.id;
+        deleteChildForId(id, childrenId);
         renderList()
     }
 }
@@ -163,7 +186,7 @@ function actionListController(e) {
 
 function init() {
     buttonCreateList.addEventListener('click', controllerNewList);
-    wrapperNewList.addEventListener('click', actionListController)
+    wrapperNewList.addEventListener('click', actionListController);
 }
 
 init();
