@@ -22,6 +22,26 @@ function editChildrenText(listId, childId) {
     editChildbyId.isEdit = !editChildbyId.isEdit;
 }
 
+function editChildrenNewText(elemId, childId, newText) {
+    const findListId = LIST.findIndex((elem) => elem.id === elemId);
+    const elementList = LIST[findListId];
+    const elementChildren = elementList.children;
+    const editChildbyId = elementChildren.findIndex((item) => item.id === childId);
+    editChildbyId.text = newText;
+}
+
+function getNewText(id) {
+    const textElemId = document.getElementById(id).children;
+    let textTask;
+
+    for (let elem of textElemId) {
+        if (elem.isContentEditable) {
+            textTask = elem.textContent;
+        }
+    }
+    return textTask;
+}
+
 function deleteChildForId(listId, itemId) {
     const indexByList = LIST.findIndex((elem) => elem.id === listId);
     const listElement = LIST[indexByList];
@@ -88,18 +108,26 @@ function renderList() {
         children.setAttribute('id', list.id);
 
         list.children.forEach((child) => {
-            
+
             const item = createElement('span', 'child-text');
             item.textContent = child.text;
             item.setAttribute('style', child.isEdit ? "border: 2px solid white" : "");
             item.contenteditable = child.isEdit;
             item.setAttribute('id', child.id);
-            
+
             const editBtnImg = createElement('img', 'edit-btn');
             editBtnImg.src = child.isEdit ? 'img/edit.png' : 'img/save.png';
 
             editBtnImg.setAttribute('id', child.id);
             editBtnImg.dataset.action = 'editBtn';
+            editBtnImg.dataset.action = 'saveBtn';
+
+
+            // const saveBtnImg = createElement('img', 'save-btn');
+            // saveBtnImg.src = 'img/save.png';
+            // saveBtnImg.dataset.action = 'saveBtn';
+            // saveBtnImg.setAttribute('id', child.id);
+
             const deleteBtn = createElement('button', 'delete-btn');
             deleteBtn.dataset.action = 'deleteBtn';
             deleteBtn.textContent = 'X';
@@ -172,6 +200,15 @@ function actionListController(e) {
         console.log(childId);
         editChildrenText(id, childId);
         renderList()
+    }
+
+    if (action === 'saveBtn'){
+        console.log('555555')
+        const newText = getNewText(id);
+        const childId = e.target.id;
+        editChildrenText(id, childId);
+        editChildrenNewText(id, childId, newText);
+        renderList();
     }
 
     if (action === 'deleteBtn') {
