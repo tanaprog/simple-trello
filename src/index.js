@@ -18,28 +18,28 @@ function editChildrenText(listId, childId) {
     const findListId = LIST.findIndex((elem) => elem.id === listId);
     const elementList = LIST[findListId];
     const elementChildren = elementList.children;
-    const editChildbyId = elementChildren.findIndex((item) => item.id === childId);
-    editChildbyId.isEdit = !editChildbyId.isEdit;
+    const editChildbyId = elementChildren.findIndex((item) => item.id === Number(childId));
+    elementChildren[editChildbyId].isEdit = !elementChildren[editChildbyId].isEdit;
 }
 
 function editChildrenNewText(elemId, childId, newText) {
     const findListId = LIST.findIndex((elem) => elem.id === elemId);
     const elementList = LIST[findListId];
     const elementChildren = elementList.children;
-    const editChildbyId = elementChildren.findIndex((item) => item.id === childId);
-    editChildbyId.text = newText;
+    const editChildbyId = elementChildren.findIndex((item) => Number(item.id) === childId);
+    elementChildren[editChildbyId].text = newText;
 }
 
 function getNewText(id) {
     const textElemId = document.getElementById(id).children;
-    let textTask;
+    let text;
 
     for (let elem of textElemId) {
         if (elem.isContentEditable) {
-            textTask = elem.textContent;
+            text = elem.textContent;
         }
     }
-    return textTask;
+    return text;
 }
 
 function deleteChildForId(listId, itemId) {
@@ -112,21 +112,14 @@ function renderList() {
             const item = createElement('span', 'child-text');
             item.textContent = child.text;
             item.setAttribute('style', child.isEdit ? "border: 2px solid white" : "");
-            item.contenteditable = child.isEdit;
+            item.contentEditable = Boolean(child.isEdit);
             item.setAttribute('id', child.id);
 
-            const editBtnImg = createElement('img', 'edit-btn');
-            editBtnImg.src = child.isEdit ? 'img/edit.png' : 'img/save.png';
+            const editBtn = createElement('button', 'edit-btn');
+            editBtn.innerHTML = child.isEdit ? 'save' : 'edit';
 
-            editBtnImg.setAttribute('id', child.id);
-            editBtnImg.dataset.action = 'editBtn';
-            editBtnImg.dataset.action = 'saveBtn';
-
-
-            // const saveBtnImg = createElement('img', 'save-btn');
-            // saveBtnImg.src = 'img/save.png';
-            // saveBtnImg.dataset.action = 'saveBtn';
-            // saveBtnImg.setAttribute('id', child.id);
+            editBtn.setAttribute('id', child.id);
+            editBtn.dataset.action = child.isEdit ? 'saveBtn' : 'editBtn';
 
             const deleteBtn = createElement('button', 'delete-btn');
             deleteBtn.dataset.action = 'deleteBtn';
@@ -134,7 +127,7 @@ function renderList() {
             deleteBtn.setAttribute('id', child.id)
 
             children.appendChild(item);
-            children.appendChild(editBtnImg)
+            children.appendChild(editBtn)
             children.appendChild(deleteBtn);
         })
 
@@ -177,15 +170,17 @@ function actionListController(e) {
 
     if (action === 'create') {
         const text = getInputListText(id);
-        const child = { id: Math.floor(Math.random() * 200) + 1, text };
+        const child = {
+            id: Math.floor(Math.random() * 200) + 1,
+            text: text,
+            isEdit: false,
+        };
 
         LIST.forEach((item) => {
             if (Number(item.id === id)) {
                 item.children.push(child)
             }
         });
-        console.log('create')
-
         renderList()
     }
 
@@ -195,15 +190,12 @@ function actionListController(e) {
     }
 
     if (action === 'editBtn') {
-        console.log('EDIT')
         const childId = e.target.id;
-        console.log(childId);
         editChildrenText(id, childId);
         renderList()
     }
 
-    if (action === 'saveBtn'){
-        console.log('555555')
+    if (action === 'saveBtn') {
         const newText = getNewText(id);
         const childId = e.target.id;
         editChildrenText(id, childId);
