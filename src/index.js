@@ -26,20 +26,13 @@ function editChildrenNewText(elemId, childId, newText) {
     const findListId = LIST.findIndex((elem) => elem.id === elemId);
     const elementList = LIST[findListId];
     const elementChildren = elementList.children;
-    const editChildbyId = elementChildren.findIndex((item) => Number(item.id) === childId);
+    const editChildbyId = elementChildren.findIndex((item) => item.id === Number(childId));
     elementChildren[editChildbyId].text = newText;
 }
 
-function getNewText(id) {
-    const textElemId = document.getElementById(id).children;
-    let text;
-
-    for (let elem of textElemId) {
-        if (elem.isContentEditable) {
-            text = elem.textContent;
-        }
-    }
-    return text;
+function getNewText(elementId) {
+    const spanElement = document.querySelector(`span[id="${elementId}"]`);
+    return spanElement.textContent;
 }
 
 function deleteChildForId(listId, itemId) {
@@ -196,8 +189,8 @@ function actionListController(e) {
     }
 
     if (action === 'saveBtn') {
-        const newText = getNewText(id);
         const childId = e.target.id;
+        const newText = getNewText(childId);
         editChildrenText(id, childId);
         editChildrenNewText(id, childId, newText);
         renderList();
