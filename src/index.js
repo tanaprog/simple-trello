@@ -27,8 +27,8 @@ function editListText(id) {
     findElementList.isCompleted = !findElementList.isCompleted;
 }
 
-function editListNewText(elemId, newText) {
-    const findListId = LIST.findIndex((elem) => elem.id === Number(elemId));
+function editListNewText(id, newText) {
+    const findListId = LIST.find((elem) => elem.id === id);
     findListId.text = newText;
 }
 
@@ -42,13 +42,11 @@ function editChildrenNewText(elemId, childId, newText) {
 
 function getNewText(elementId) {
     const spanElement = document.querySelector(`span[id="${elementId}"]`);
-    console.log(spanElement)
     return spanElement.textContent;
 }
 
 function getNewTextData() {
     const spanElement = document.querySelector('span[data-list]');
-    console.log(spanElement)
     return spanElement.textContent;
 }
 
@@ -99,14 +97,12 @@ function renderList() {
 
         const newList = createElement('div', 'new-list')
         newList.setAttribute('id', list.id);
-        /////////////////////////////////////////////
 
         const spanListText = createElement('span', 'description-text');
         spanListText.textContent = list.text;
         spanListText.setAttribute('style', list.isCompleted ? "border: 2px solid white" : "");
         spanListText.contentEditable = Boolean(list.isCompleted);
-        // spanListText.setAttribute('id', list.id);
-        spanListText.dataset.list = 'data-list';
+        spanListText.dataset.list = 'data-list'; /// вместо id
 
         const editList = createElement('button', 'delete-list');
         editList.innerHTML = list.isCompleted ? 'save' : 'edit';
@@ -230,7 +226,6 @@ function actionListController(e) {
 
     if (action === 'saveBtnList') {
         const newText = getNewTextData(id)
-        console.log(newText)
         editListText(id);
         editListNewText(id, newText);
         renderList();
