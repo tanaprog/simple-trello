@@ -41,12 +41,12 @@ function editChildrenNewText(elemId, childId, newText) {
 }
 
 function getNewText(elementId) {
-    const spanElement = document.querySelector(`span[id="${elementId}"]`);
+    const spanElement = document.querySelector(`[data-child="${elementId}"]`);
     return spanElement.textContent;
 }
 
-function getNewTextData() {
-    const spanElement = document.querySelector('span[data-list]');
+function getNewTextData(id) {
+    const spanElement = document.querySelector(`[data-list="${id}"]`);
     return spanElement.textContent;
 }
 
@@ -102,7 +102,7 @@ function renderList() {
         spanListText.textContent = list.text;
         spanListText.setAttribute('style', list.isCompleted ? "border: 2px solid white" : "");
         spanListText.contentEditable = Boolean(list.isCompleted);
-        spanListText.dataset.list = 'data-list'; /// вместо id
+        spanListText.dataset.list = list.id; /// вместо id
 
         const editList = createElement('button', 'delete-list');
         editList.innerHTML = list.isCompleted ? 'save' : 'edit';
@@ -128,7 +128,7 @@ function renderList() {
             item.textContent = child.text;
             item.setAttribute('style', child.isEdit ? "border: 2px solid white" : "");
             item.contentEditable = Boolean(child.isEdit);
-            item.setAttribute('id', child.id);
+            item.dataset.child = child.id;
 
             const editBtn = createElement('button', 'edit-btn');
             editBtn.innerHTML = child.isEdit ? 'save' : 'edit';
@@ -164,9 +164,7 @@ function controllerNewList(e) {
         text: text,
         children: []
     }
-    console.log(newList)
-    console.log(LIST)
-
+    
     clearInputText();
     addNewList(newList);
     renderList()
