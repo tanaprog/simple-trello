@@ -90,6 +90,18 @@ function getListId(event) {
     return id;
 }
 
+//////////////////
+function muveElement (idList, idElem){
+    const indexByList = LIST.findIndex((list) => list.id === idList);
+    const listElement = LIST[indexByList];
+    const listChildren = listElement.children;
+    const indexByChildren = listChildren.findIndex((elem) => elem.id === idElem);
+    listChildren.splice(indexByChildren, 1);
+
+    indexByList.push(indexByChildren);
+}
+///////////////////////
+
 function renderList() {
     wrapperNewList.innerHTML = '';
 
@@ -164,7 +176,7 @@ function controllerNewList(e) {
         text: text,
         children: []
     }
-    
+
     clearInputText();
     addNewList(newList);
     renderList()
