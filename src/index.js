@@ -2,7 +2,7 @@ const inputLiskTitle = document.querySelector('.list-title');
 const buttonCreateList = document.querySelector('.create-list');
 const wrapperNewList = document.querySelector('.wrapper-new-list')
 
-LIST = [];
+let LIST = [];
 
 function createElement(tag, className) {
     const element = document.createElement(tag);
@@ -14,14 +14,49 @@ function addNewList(newList) {
     LIST.push(newList);
 }
 
-// function findListById(id) {
-//     const findList = LIST.findIndex((list) => list.id === id);
-//     LIST[findList] = '56565655556'
-// }
+function editChildrenText(listId, childId) {
+    const findListId = LIST.findIndex((elem) => elem.id === listId);
+    const elementList = LIST[findListId];
+    const elementChildren = elementList.children;
+    const editChildbyId = elementChildren.findIndex((item) => item.id === Number(childId));
+    elementChildren[editChildbyId].isEdit = !elementChildren[editChildbyId].isEdit;
+}
 
-function deleteBtnForId(id) {
-    const index = LIST.children.findIndex((tsk) => tsk.id === id);
-    LIST.children.splice(index, 1);
+function editListText(id) {
+    const findElementList = LIST.find((elem) => elem.id === id);
+    findElementList.isCompleted = !findElementList.isCompleted;
+}
+
+function editListNewText(id, newText) {
+    const findListId = LIST.find((elem) => elem.id === id);
+    findListId.text = newText;
+}
+
+function editChildrenNewText(elemId, childId, newText) {
+    const findListId = LIST.findIndex((elem) => elem.id === elemId);
+    const elementList = LIST[findListId];
+    const elementChildren = elementList.children;
+    const editChildbyId = elementChildren.findIndex((item) => item.id === Number(childId));
+    elementChildren[editChildbyId].text = newText;
+}
+
+function getNewText(elementId) {
+    const spanElement = document.querySelector(`[data-child="${elementId}"]`);
+    return spanElement.textContent;
+}
+
+function getNewTextData(id) {
+    const spanElement = document.querySelector(`[data-list="${id}"]`);
+    return spanElement.textContent;
+}
+
+function deleteChildForId(listId, itemId) {
+    const indexByList = LIST.findIndex((elem) => elem.id === listId);
+    const listElement = LIST[indexByList];
+    const listChildren = listElement.children;
+    const indexByChildren = listChildren.findIndex((item) => item.id === itemId);
+
+    listChildren.splice(indexByChildren, 1);
 }
 
 function deleteNewList(id) {
@@ -35,19 +70,13 @@ function getInputText(e) {
     const listText = inputLiskTitle.value;
     return listText;
 }
-//////////////
 
-function getInputListText(e) {
-    e.preventDefault();
-
-    LIST.forEach(() => {
-    const textList = document.querySelector('.text-title');
-    const listNewText = textList.value;
-    console.log(listNewText)
-    return listNewText;
-})
+function getInputListText(id) {
+    const textsList = document.querySelectorAll('.text-title');
+    const allInputs = (Array.from(textsList));
+    const textInput = allInputs.find((elem) => Number(elem.id) === id);
+    return textInput.value;
 }
-//////////////////
 
 function clearInputText() {
     inputLiskTitle.value = '';
@@ -61,44 +90,75 @@ function getListId(event) {
     return id;
 }
 
+//////////////////
+function muveElement (idList, idElem){
+    const indexByList = LIST.findIndex((list) => list.id === idList);
+    const listElement = LIST[indexByList];
+    const listChildren = listElement.children;
+    const indexByChildren = listChildren.findIndex((elem) => elem.id === idElem);
+    listChildren.splice(indexByChildren, 1);
+
+    indexByList.push(indexByChildren);
+}
+///////////////////////
+
 function renderList() {
     wrapperNewList.innerHTML = '';
+
     LIST.forEach((list) => {
+
         const newList = createElement('div', 'new-list')
         newList.setAttribute('id', list.id);
-        const inputListText = createElement('input', 'description-text')
-        inputListText.value = list.text;
-        inputListText.setAttribute('id', list.id);
+
+        const spanListText = createElement('span', 'description-text');
+        spanListText.textContent = list.text;
+        spanListText.setAttribute('style', list.isCompleted ? "border: 2px solid white" : "");
+        spanListText.contentEditable = Boolean(list.isCompleted);
+        spanListText.dataset.list = list.id; /// вместо id
+
+        const editList = createElement('button', 'delete-list');
+        editList.innerHTML = list.isCompleted ? 'save' : 'edit';
+        editList.dataset.action = list.isCompleted ? 'saveBtnList' : 'editBtnList';
+
         const deleteList = createElement('button', 'delete-list');
         deleteList.dataset.action = 'deleteList';
-        deleteList.textContent = 'delete list';
+        deleteList.textContent = 'delete';
 
         const inputText = createElement('input', 'text-title')
         inputText.dataset.action = 'inputText';
         inputText.value = '';
         inputText.setAttribute('id', list.id);
+
         const buttonAdd = createElement('button', 'create-description');
         buttonAdd.dataset.action = 'create';
         buttonAdd.textContent = 'create';
-        buttonAdd.setAttribute('id', list.id);
         const children = createElement('div', 'wrapper-span')
-        children.setAttribute('id', list.id);
 
         list.children.forEach((child) => {
-            const item = createElement('input', 'child-text');
-            item.classList.add('child-text-none');
-            item.value = child.text;
-            item.setAttribute('id', child.id);
+
+            const item = createElement('span', 'child-text');
+            item.textContent = child.text;
+            item.setAttribute('style', child.isEdit ? "border: 2px solid white" : "");
+            item.contentEditable = Boolean(child.isEdit);
+            item.dataset.child = child.id;
+
+            const editBtn = createElement('button', 'edit-btn');
+            editBtn.innerHTML = child.isEdit ? 'save' : 'edit';
+            editBtn.setAttribute('id', child.id);
+            editBtn.dataset.action = child.isEdit ? 'saveBtn' : 'editBtn';
+
             const deleteBtn = createElement('button', 'delete-btn');
             deleteBtn.dataset.action = 'deleteBtn';
             deleteBtn.textContent = 'X';
             deleteBtn.setAttribute('id', child.id)
 
             children.appendChild(item);
+            children.appendChild(editBtn)
             children.appendChild(deleteBtn);
         })
 
-        newList.appendChild(inputListText);
+        newList.appendChild(spanListText);
+        newList.appendChild(editList);
         newList.appendChild(deleteList);
         newList.appendChild(inputText);
         newList.appendChild(buttonAdd);
@@ -114,19 +174,13 @@ function controllerNewList(e) {
     const newList = {
         id: Math.floor(Math.random() * 200) + 1,
         text: text,
-        children: [{
-            id: Math.floor(Math.random() * 200) + 1,
-            text: '',
-        }]
+        children: []
     }
-    console.log(newList)
-    console.log(LIST)
 
     clearInputText();
     addNewList(newList);
     renderList()
 }
-
 
 function inputController(e) {
     const id = getListId(e);
@@ -135,21 +189,24 @@ function inputController(e) {
     LIST[editElem].text = text;
 }
 
-function showChild() {
-    const addChild = document.querySelector('.child-text');
-    addChild.classList.toggle('child-text-none');
-}
-
 function actionListController(e) {
     const id = getListId(e);
-    // const txt = getInputListText(e)
     const action = e.target.dataset.action;
 
     if (action === 'create') {
-        console.log('create');
-        getInputListText(e)
-        // findListById(id)
-        // addNewList(txt)
+        const text = getInputListText(id);
+        const child = {
+            id: Math.floor(Math.random() * 200) + 1,
+            text: text,
+            isCompleted: false,
+            isEdit: false,
+        };
+
+        LIST.forEach((item) => {
+            if (Number(item.id === id)) {
+                item.children.push(child)
+            }
+        });
         renderList()
     }
 
@@ -158,19 +215,43 @@ function actionListController(e) {
         renderList()
     }
 
-    if (action === 'deleteBtn') {
-        console.log('YOOOOO')
-        deleteBtnForId(id);
+    if (action === 'editBtn') {
+        const childId = e.target.id;
+        editChildrenText(id, childId);
         renderList()
+    }
+
+    if (action === 'editBtnList') {
+        editListText(id);
+        renderList()
+    }
+
+    if (action === 'saveBtn') {
+        const childId = e.target.id;
+        const newText = getNewText(childId);
+        editChildrenText(id, childId);
+        editChildrenNewText(id, childId, newText);
+        renderList();
+    }
+
+    if (action === 'saveBtnList') {
+        const newText = getNewTextData(id)
+        editListText(id);
+        editListNewText(id, newText);
+        renderList();
+    }
+
+    if (action === 'deleteBtn') {
+        const childrenId = e.target.id;
+        deleteChildForId(id, childrenId);
+        renderList();
     }
 }
 
 
 function init() {
     buttonCreateList.addEventListener('click', controllerNewList);
-    // wrapperNewList.addEventListener('input', inputController);
-    // wrapperNewList.addEventListener('input', getTextList);
-    wrapperNewList.addEventListener('click', actionListController)
+    wrapperNewList.addEventListener('click', actionListController);
 }
 
 init();
